@@ -2,7 +2,7 @@
   <div class="menu-content">
     <div class="title">
       <IconComponent :height="40" :width="40" />
-      网易云音乐
+      {{ title }}
     </div>
 
     <div class="menu" v-for="menu in menus" :key="menu.id">
@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import IconComponent from '@/components/IconComponent/index.vue'
 import MenuItem from './components/MenuItem.vue'
-
+const title = import.meta.env.VITE_APP_TITLE
 const menus = reactive([
   {
     id: '01',
@@ -80,6 +80,7 @@ const menus = reactive([
   align-items: center;
   justify-content: space-between;
   padding-bottom: 20px;
+  -webkit-app-region: drag; // 可拖拽
 }
 
 .menu {

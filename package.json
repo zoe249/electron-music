@@ -11,6 +11,7 @@
   },
   "main": "main.js",
   "dependencies": {
+    "axios": "^1.6.7",
     "sass": "^1.71.1",
     "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",

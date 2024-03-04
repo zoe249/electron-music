@@ -1,7 +1,8 @@
 <template>
   <div class="layout-content">
     <Menu></Menu>
-    <div>
+    <div class="main-content">
+      <Header />
       <Main />
     </div>
   </div>
@@ -10,6 +11,7 @@
 <script setup lang="ts">
 import Menu from './Menu/index.vue'
 import Main from './Content/index.vue'
+import Header from './Header/index.vue'
 </script>
 
 <style lang="scss" scoped>
@@ -33,5 +35,11 @@ import Main from './Content/index.vue'
     background: #ddd;
     color: black;
   }
+}
+
+.main-content {
+  box-sizing: border-box;
+  height: 100vh;
+  padding: 20px;
 }
 </style>

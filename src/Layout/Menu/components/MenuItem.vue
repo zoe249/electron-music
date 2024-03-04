@@ -1,6 +1,4 @@
 <template>
-  <!-- :class="{activeRoute ? 'menu-item activeRoute' : 'menu-item'}" -->
-  <!-- <div class="menu-item" @click="menuItemClick"> -->
   <div
     :class="activeRoute ? 'activeRoute' : 'menu-item'"
     @click="menuItemClick"
@@ -58,6 +56,9 @@ const menuItemClick = () => {
   cursor: pointer;
   color: #ffffff;
   background-image: linear-gradient(120deg, #ff1368, #fc3d49);
+  .iconfont {
+    color: #ffffff;
+  }
 }
 
 .iconfont {
