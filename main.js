@@ -17,7 +17,7 @@ function createWindow() {
     width: 1000,
     height: 750,
     roundedCorners: true,
-    // transparent: true, // 打开透明窗口
+    transparent: true, // 打开透明窗口
     backgroundColor: '#00000000',
     icon: './public/icons/网易云音乐.png',
     maximizable: true,
@@ -30,7 +30,7 @@ function createWindow() {
   mainWindow.loadFile('dist/index.html') // 此处跟electron官网路径不同，需要注意
 
   // 打开开发工具
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   ipcMain.on('operation-window', function (event, operationType) {
     if (!mainWindow) return

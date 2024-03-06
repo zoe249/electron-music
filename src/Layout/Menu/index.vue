@@ -1,7 +1,7 @@
 <template>
   <div class="menu-content">
     <div class="title">
-      <IconComponent :height="40" :width="40" />
+      <LogoIcon :height="40" :width="40" />
       {{ title }}
     </div>
 
@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import IconComponent from '@/components/IconComponent/index.vue'
+import LogoIcon from '@/components/LogoIcon/index.vue'
 import MenuItem from './components/MenuItem.vue'
 const title = import.meta.env.VITE_APP_TITLE
 const menus = reactive([

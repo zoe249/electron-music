@@ -16,6 +16,14 @@ body{
   color: #717176;
 }
 
+input {
+  border: none;
+  &:focus {
+    border: none;
+    outline: none; /* 或者 outline: 0px */
+  }
+}
+
 // @media (prefers-color-scheme: dark) {
 //   body { background: #13131A; color: white; }
 // }
