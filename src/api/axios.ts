@@ -30,7 +30,7 @@ http.interceptors.response.use(
     ) {
       return res
     }
-    return Promise.resolve(res)
+    return Promise.resolve(res.data)
   },
   (error) => {
     return Promise.reject(error)

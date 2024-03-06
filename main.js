@@ -1,11 +1,14 @@
 // 控制应用生命周期和创建原生浏览器窗口的模组
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
+// const { app, BrowserWindow, ipcMain } = require('electron')
+// const path = require('path')
 
 function createWindow() {
   // 创建浏览器窗口
@@ -14,8 +17,10 @@ function createWindow() {
     width: 1000,
     height: 750,
     roundedCorners: true,
-    transparent: true, // 打开透明窗口
+    // transparent: true, // 打开透明窗口
     backgroundColor: '#00000000',
+    icon: './public/icons/网易云音乐.png',
+    maximizable: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -23,10 +28,27 @@ function createWindow() {
 
   // 加载 index.html
   mainWindow.loadFile('dist/index.html') // 此处跟electron官网路径不同，需要注意
-  mainWindow.webContents.openDevTools()
 
   // 打开开发工具
   // mainWindow.webContents.openDevTools()
+
+  ipcMain.on('operation-window', function (event, operationType) {
+    if (!mainWindow) return
+    switch (operationType) {
+      case 'min':
+        mainWindow.minimize()
+        break
+      case 'max':
+        mainWindow.maximize()
+        break
+      case 'close':
+        mainWindow.close()
+        break
+      case 'restoreDown':
+        mainWindow.unmaximize()
+        break
+    }
+  })
 }
 
 // 这段程序将会在 Electron 结束初始化

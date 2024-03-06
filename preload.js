@@ -12,3 +12,12 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${dependency}-version`, process.versions[dependency])
   }
 })
+
+//向渲染器进程暴露一个全局的 window.electronAPI 变量。
+const { contextBridge, ipcRenderer, app } = require('electron')
+// import { contextBridge, ipcRenderer, app } from 'electron'
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  operationWindow: (actionType) =>
+    ipcRenderer.send('operation-window', actionType),
+})

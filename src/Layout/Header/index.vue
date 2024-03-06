@@ -6,26 +6,102 @@
       </div>
       <div class="search-content">
         <div class="search-input">
-          <i class="iconfont icon-search"></i>
-          <input type="text" v-model="searchValue" />
-          <i v-show="searchValue" class="iconfont icon-qingkong-"></i>
+          <i class="iconfont icon-search" @click="handlerSearch"></i>
+          <input
+            type="text"
+            v-model="searchValue"
+            :placeholder="searchInfo?.showKeyword"
+            @focus="updateIsFocus(true)"
+            @blur="updateIsFocus(false)"
+          />
+          <i
+            v-show="searchValue"
+            class="iconfont icon-qingkong-"
+            @click="() => (searchValue = '')"
+          ></i>
         </div>
         <div class="listen-music">
           <i class="iconfont icon-tinggeshiqu"></i>
         </div>
       </div>
     </div>
-    <div class="header-right"></div>
+    <div class="header-right">
+      <div class="logo-info">
+        <i class="iconfont icon-denglu-copy"></i>
+      </div>
+      <div class="size-info">
+        <i
+          class="iconfont icon-2zuixiaohua-2"
+          @click="onElectronOperationWindow('min')"
+        ></i>
+        <i
+          class="iconfont icon-zuidahua"
+          @click="
+            onElectronOperationWindow(isWindowMax ? 'restoreDown' : 'max')
+          "
+        ></i>
+        <i
+          class="iconfont icon-guanbi"
+          @click="onElectronOperationWindow('close')"
+        ></i>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const searchValue = ref('')
+// import { ipcRenderer } from 'electron'
+// import electron from 'electron'
+interface searchDefaultType {
+  realkeyword: string
+  showKeyword: string
+}
+import { getSearchDefault } from '@/api/common'
+const searchValue = ref()
+const searchInfo = ref<searchDefaultType>()
+const isSearchFocus = ref(false)
+let isWindowMax = false
+
+/**
+ * 更新输入框状态
+ */
+const updateIsFocus = (value: boolean) => (isSearchFocus.value = value)
+
+const handlerSearch = () => {
+  let _searchVal = ''
+  if (searchValue.value) {
+    _searchVal = searchValue.value
+  } else {
+    _searchVal = searchInfo.value?.realkeyword!
+  }
+  console.log(_searchVal)
+}
+
+const getDefaulet = () => {
+  getSearchDefault<SucType>().then((res: SucType) => {
+    searchInfo.value = res.data
+  })
+}
+
+const onElectronOperationWindow = (
+  type: 'min' | 'max' | 'close' | 'restoreDown'
+) => {
+  if (type === 'max' || type === 'restoreDown') {
+    isWindowMax = !isWindowMax
+  }
+  ;(window as any).electronAPI.operationWindow(type)
+}
+
+onMounted(() => getDefaulet())
 </script>
 
 <style lang="scss" scoped>
 .header-content {
   height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: calc(100vw - 250px);
 }
 .header-left {
   display: flex;
@@ -117,6 +193,29 @@ const searchValue = ref('')
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  .logo-info {
+    :hover {
+      color: #ffffff;
+      cursor: pointer;
+    }
+  }
+  .size-info {
+    margin-left: 20px;
+    padding-left: 20px;
+    border-left: 1px solid #2b2b31;
+    :hover {
+      color: #ffffff;
+    }
+    .iconfont {
+      padding: 0 10px;
+      cursor: pointer;
+    }
   }
 }
 </style>

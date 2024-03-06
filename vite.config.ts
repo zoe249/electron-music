@@ -3,6 +3,10 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 
+import commonjsExternals from 'vite-plugin-commonjs-externals'
+
+const externals = ['path', /^electron(\/.+)?$/]
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
@@ -11,6 +15,7 @@ export default defineConfig({
       imports: ['vue', 'pinia', 'vue-router'],
       dts: './src/auto-imports.d.ts',
     }),
+    commonjsExternals({ externals }),
   ],
 
   base: 'file:///' + path.resolve(__dirname, './dist/'),
