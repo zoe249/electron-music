@@ -1,14 +1,21 @@
 <template>
-  <div class="logo-info">
+  <div class="logo-info" v-if="userStore.userInfo">
+    <img :src="userStore.userInfo.avatarUrl" alt="" />
+
+    <div class="text">
+      {{ userStore.userInfo.nickname }}
+    </div>
+  </div>
+  <div class="logo-info" v-else>
     <div class="logo-icon">
       <i class="iconfont icon-denglu-copy"></i>
     </div>
 
-    <div class="text" @click="handlerLogin(true, $event)">未登录</div>
+    <div class="text" @click="handlerLoginIcon(true, $event)">未登录</div>
   </div>
 
   <div class="log-box" ref="logBoxRef" v-if="isLogBox">
-    <div class="close-icon" @click="handlerLogin(false, $event)">
+    <div class="close-icon" @click="handlerLoginIcon(false, $event)">
       <i class="iconfont icon-guanbi"></i>
     </div>
     <div class="icon-box">
@@ -17,43 +24,60 @@
     </div>
     <div class="login-form">
       <div class="phonenumber login-input">
-        <input type="text" placeholder="请输入手机号" />
+        <input
+          v-model="loginForm.phoneNumber"
+          type="text"
+          placeholder="请输入手机号"
+          @focus="handerPhoneFocus"
+        />
       </div>
       <div class="validatecode login-input">
-        <input type="text" placeholder="请输入验证码" />
-        <div class="getcode">获取验证码</div>
+        <input
+          v-model="loginForm.validateCode"
+          type="text"
+          placeholder="请输入验证码"
+        />
+        <div class="getcode" @click="sendValidateCode">
+          {{ showVaildateBtn }}
+        </div>
       </div>
-      <div class="remember-me">
+      <div v-if="isShowTips" class="remember-me text-tips">
+        请输入11位数的手机号
+      </div>
+      <div class="remember-me" v-else>
         <input type="checkbox" />
         <div class="text">自动登录</div>
       </div>
-      <div class="login-btn">登录</div>
+      <div class="login-btn" @click="login">登录</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import LogoIcon from '@/components/LogoIcon/index.vue'
+import { getCtcode, loginByCaptcha } from '@/api/common'
+import { validatePhone } from '@/utils/validate'
+import cache from '@/utils/cache'
+import useUserStore from '@/store/modules/user'
+
+const userStore = useUserStore()
 
 const title = import.meta.env.VITE_APP_TITLE
+const loginForm = reactive<{
+  phoneNumber?: string | number
+  validateCode?: string
+}>({ phoneNumber: '13546175424' })
+const isShowTips = ref()
 const isLogBox = ref(false)
 const logBoxRef = ref()
+
 const clientInfo = reactive<{ clientX?: number; clientY?: number }>({})
 const logBoxInfo = {
   offsetLeft: 0,
   offsetTop: 0,
 }
 
-const loginBoxPosition = computed(() => {
-  if (!logBoxRef) return
-  let styles = document.styleSheets
-  // console.log(styles)
-  const offsetX = clientInfo.clientX! - logBoxInfo.offsetLeft
-  const offsetY = clientInfo.clientY! - logBoxInfo.offsetTop
-  return `transform: translate(${offsetX}px, ${offsetY}px);`
-})
-
-const handlerLogin = (type: boolean, event: MouseEvent) => {
+const handlerLoginIcon = (type: boolean, event: MouseEvent) => {
   isLogBox.value = type
   nextTick(() => {
     clientInfo.clientX = event.clientX
@@ -62,12 +86,78 @@ const handlerLogin = (type: boolean, event: MouseEvent) => {
     logBoxInfo.offsetTop = logBoxRef.value.offsetTop
   })
 }
+
+const downCountInfo = reactive<{ timer: unknown; downCount: number }>({
+  timer: null,
+  downCount: 0,
+})
+
+const showVaildateBtn = computed(() => {
+  if (downCountInfo.downCount) {
+    return `${downCountInfo.downCount}秒后重试`
+  } else {
+    return '获取验证码'
+  }
+})
+
+/**
+ * 发送验证码
+ */
+const sendValidateCode = () => {
+  if (!loginForm.phoneNumber) {
+    isShowTips.value = true
+    return
+  }
+  if (!validatePhone(loginForm.phoneNumber as string)) {
+    isShowTips.value = true
+    return
+  }
+  if (downCountInfo.timer) return
+  getCtcode<{ code: number; data: any }>(loginForm.phoneNumber as string).then(
+    (res) => {
+      if (res.code === 200 && res.data) {
+        downCountInfo.downCount = 30
+        downCountInfo.timer = setInterval(() => {
+          if (downCountInfo.downCount > 0) {
+            downCountInfo.downCount--
+          } else {
+            downCountInfo.timer = null
+          }
+        }, 1000)
+      }
+    }
+  )
+}
+
+const login = () => {
+  loginByCaptcha(loginForm.phoneNumber as string, loginForm.validateCode!).then(
+    (res: any) => {
+      userStore.setUserInfo(res.profile)
+      cache.local.setJSON('token', res.cookie)
+      cache.local.setJSON('cookie', res.token)
+      cache.local.setJSON('userInfo', res.profile)
+    }
+  )
+}
+
+const handerPhoneFocus = () => (isShowTips.value = false)
+
+onMounted(() => {
+  const userInfo = cache.local.getJSON('userInfo')
+  userStore.setUserInfo(userInfo)
+})
 </script>
 
 <style lang="scss" scoped>
 .logo-info {
   display: flex;
   align-items: center;
+  img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
   .logo-icon {
     background-color: #2c2d36;
     height: 30px;
@@ -90,7 +180,7 @@ const handlerLogin = (type: boolean, event: MouseEvent) => {
 
 .log-box {
   padding: 20px;
-  height: 480px;
+  height: 400px;
   width: 320px;
   background-color: #1b1b24;
   position: absolute;
@@ -162,6 +252,10 @@ const handlerLogin = (type: boolean, event: MouseEvent) => {
     .text {
       font-size: 12px;
     }
+  }
+  .text-tips {
+    font-size: 12px;
+    color: red;
   }
   .login-btn {
     margin-top: 30px;
