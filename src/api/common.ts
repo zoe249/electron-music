@@ -21,3 +21,17 @@ export const getCtcode = <T>(phone: string) => {
 export const loginByCaptcha = <T>(phone: string, captcha: string) => {
   return request.get<T>(`/login/cellphone`, { phone: phone, captcha: captcha })
 }
+
+/**
+ * 热搜
+ */
+export const getSearchHot = <T>() => {
+  return request.get<T>('/search/hot/detail')
+}
+
+/**
+ * 搜索建议
+ */
+export const getSearchSuggest = <T>(keywords: string) => {
+  return request.get<T>('/search?keywords=' + keywords)
+}

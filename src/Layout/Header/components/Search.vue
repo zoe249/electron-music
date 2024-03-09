@@ -6,6 +6,7 @@
         type="text"
         v-model="searchValue"
         :placeholder="searchInfo?.showKeyword"
+        @input="changeInput"
         @focus="updateIsFocus(true)"
         @blur="updateIsFocus(false)"
       />
@@ -19,20 +20,57 @@
       <i class="iconfont icon-tinggeshiqu"></i>
     </div>
   </div>
+
+  <div class="search-box" v-if="isSearchWrap">
+    <div class="hot-search" v-if="!searchValue">
+      <div class="title">热搜榜</div>
+      <div
+        class="hot-item"
+        v-for="(item, index) in searchHotList"
+        :key="index"
+        @click="toSearchPage(item.searchWord)"
+      >
+        <div :class="['search-num', index <= 2 ? 'hot-color' : '']">
+          {{ index + 1 }}
+        </div>
+        <div class="search-name">{{ item.searchWord }}</div>
+      </div>
+    </div>
+    <div class="search-suggest" v-else>
+      <div class="title">猜你想搜</div>
+      <div
+        class="suggest-item"
+        v-for="(item, index) in searchSuggestList"
+        @click="toSearchPage(item.name)"
+      >
+        <div class="search-name">{{ item.name }}</div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { getSearchDefault } from '@/api/common'
+import { getSearchDefault, getSearchHot, getSearchSuggest } from '@/api/common'
+import { debounce } from '@/utils/index'
 interface searchDefaultType {
   realkeyword: string
   showKeyword: string
 }
 
+const router = useRouter()
+
 const searchValue = ref()
 const searchInfo = ref<searchDefaultType>()
 const isSearchFocus = ref(false)
+const isSearchWrap = ref(false)
 
-const updateIsFocus = (value: boolean) => (isSearchFocus.value = value)
+const searchHotList = ref()
+const searchSuggestList = ref()
+
+const updateIsFocus = (value: boolean) => {
+  isSearchFocus.value = value
+  value ? (isSearchWrap.value = true) : ''
+}
 
 const handlerSearch = () => {
   let _searchVal = ''
@@ -41,7 +79,6 @@ const handlerSearch = () => {
   } else {
     _searchVal = searchInfo.value?.realkeyword!
   }
-  console.log(_searchVal)
 }
 
 const getDefaulet = () => {
@@ -50,7 +87,31 @@ const getDefaulet = () => {
   })
 }
 
-onMounted(() => getDefaulet())
+const getSearchHotList = () => {
+  getSearchHot().then((res: any) => {
+    searchHotList.value = res.data
+  })
+}
+
+const changeInput = debounce(
+  async () => {
+    getSearchSuggest(searchValue.value).then((res: any) => {
+      searchSuggestList.value = res.result.songs
+    })
+  },
+  500,
+  false
+)
+
+const toSearchPage = (keyword: string) => {
+  isSearchWrap.value = false
+  router.push('/search')
+}
+
+onMounted(() => {
+  getDefaulet()
+  getSearchHotList()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -116,6 +177,56 @@ onMounted(() => getDefaulet())
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+.search-box {
+  height: 500px;
+  width: 320px;
+  box-sizing: border-box;
+  background-color: #2d2d38;
+  position: absolute;
+  top: 100px;
+  border-radius: 8px;
+  padding: 20px 0;
+  overflow-y: scroll;
+  .title {
+    padding: 0 20px 20px 20px;
+    color: #73737a;
+    font-weight: bold;
+  }
+  .hot-item {
+    height: 60px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    cursor: pointer;
+    .search-num {
+      font-size: 14px;
+      font-weight: bold;
+      width: 30px;
+      color: #818188;
+    }
+    .hot-color {
+      color: #ff3a3a;
+    }
+    &:hover {
+      background-color: #393944;
+    }
+  }
+  .suggest-item {
+    cursor: pointer;
+    &:hover {
+      background-color: #393944;
+    }
+    .search-name {
+      height: 40px;
+      line-height: 40px;
+      padding-right: 20px;
+      padding-left: 30px;
+      font-size: 14px;
+    }
   }
 }
 </style>

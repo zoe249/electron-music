@@ -3,10 +3,10 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    // {
-    // path: '',
-    // redirect: '/home',
-    // },
+    {
+      path: '',
+      redirect: '/home',
+    },
     {
       path: '/home',
       component: () => import('@/Views/Home/index.vue'),
@@ -14,6 +14,10 @@ const router = createRouter({
     {
       path: '/boke',
       component: () => import('@/Views/Boke/index.vue'),
+    },
+    {
+      path: '/search',
+      component: () => import('@/Views/Search/indev.vue'),
     },
   ],
 })

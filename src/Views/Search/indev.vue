@@ -1,5 +1,5 @@
 <template>
-  <div>index</div>
+  <div>搜索结果</div>
 </template>
 
 <script setup lang="ts"></script>
