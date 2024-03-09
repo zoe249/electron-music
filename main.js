@@ -30,7 +30,7 @@ function createWindow() {
   mainWindow.loadFile('dist/index.html') // 此处跟electron官网路径不同，需要注意
 
   // 打开开发工具
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   ipcMain.on('operation-window', function (event, operationType) {
     if (!mainWindow) return

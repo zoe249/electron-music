@@ -33,5 +33,5 @@ export const getSearchHot = <T>() => {
  * 搜索建议
  */
 export const getSearchSuggest = <T>(keywords: string) => {
-  return request.get<T>('/search?keywords=' + keywords)
+  return request.get<T>('/search', { keywords: keywords })
 }

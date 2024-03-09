@@ -31,6 +31,10 @@ export function debounce(
   }
 }
 
+/**
+ * 参数处理
+ * @param {*} params  参数
+ */
 export function tansParams(params: any) {
   let result = ''
   for (const propName of Object.keys(params)) {
@@ -50,7 +54,7 @@ export function tansParams(params: any) {
           }
         }
       } else {
-        result += params + encodeURIComponent(value) + '&'
+        result += part + encodeURIComponent(value) + '&'
       }
     }
   }

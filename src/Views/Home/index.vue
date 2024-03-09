@@ -6,7 +6,7 @@
 import api from '@/api/index'
 
 api.get('/banner').then((res) => {
-  console.log(res)
+  // console.log(res)
 })
 </script>
 

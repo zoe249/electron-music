@@ -82,7 +82,7 @@ const handlerSearch = () => {
 }
 
 const getDefaulet = () => {
-  getSearchDefault<SucType>().then((res: SucType) => {
+  getSearchDefault<SucType>().then((res) => {
     searchInfo.value = res.data
   })
 }
