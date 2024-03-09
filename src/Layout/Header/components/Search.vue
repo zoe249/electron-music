@@ -185,6 +185,7 @@ onMounted(() => {
   box-sizing: border-box;
   background-color: #2d2d38;
   position: absolute;
+  z-index: 9;
   top: 100px;
   border-radius: 8px;
   padding: 20px 0;

@@ -5,6 +5,7 @@
       <Header />
       <Main />
     </div>
+    <Player />
   </div>
 </template>
 
@@ -12,6 +13,7 @@
 import Menu from './Menu/index.vue'
 import Main from './Content/index.vue'
 import Header from './Header/index.vue'
+import Player from './Player/index.vue'
 </script>
 
 <style lang="scss" scoped>
@@ -19,7 +21,7 @@ import Header from './Header/index.vue'
   display: flex;
   border-radius: 16px;
   overflow: hidden;
-  height: 100%;
+  height: calc(100% - 80px);
   width: 100%;
 }
 
