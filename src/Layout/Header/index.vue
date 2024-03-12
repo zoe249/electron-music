@@ -62,7 +62,7 @@ const onElectronOperationWindow = (
 .back-icon {
   height: 35px;
   width: 25px;
-  border: 1px solid #37373d;
+  @include border_color('light-grey-color');
   margin-right: 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -71,7 +71,7 @@ const onElectronOperationWindow = (
   align-items: center;
   :hover {
     color: #ffffff;
-    background-color: #212127;
+    // background-color: #212127;
     height: 35px;
     width: 25px;
     border-radius: 6px;

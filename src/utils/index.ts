@@ -60,3 +60,16 @@ export function tansParams(params: any) {
   }
   return result
 }
+
+/**
+ * 音乐时长格式化
+ */
+export function formatDuration(duration: number) {
+  let sDuration = duration / 1000
+  const _minute = Number((sDuration / 60).toFixed(0))
+  const _second = Number((sDuration % 60).toFixed(0))
+  let _duration = _minute < 9 ? '0' + _minute : _minute
+  _duration =
+    _second < 9 ? _duration + ':0' + _second : _duration + ':' + _second
+  return _duration
+}

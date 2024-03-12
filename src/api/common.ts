@@ -35,3 +35,22 @@ export const getSearchHot = <T>() => {
 export const getSearchSuggest = <T>(keywords: string) => {
   return request.get<T>('/search', { keywords: keywords })
 }
+
+/**
+ * 获取歌曲信息
+ */
+export const getSongsInfo = <T>(ids: string) => {
+  return request.get<T>('/song/detail', { ids })
+}
+
+/**
+ * 获取音乐url
+ * 播放音质等级, 分为 standard => 标准,higher => 较高, exhigh=>极高, lossless=>无损, hires=>Hi-Res, jyeffect => 高清环绕声, sky => 沉浸环绕声, jymaster => 超清母带
+ */
+export const getSongsUrl = <T>(id: string, level = 'standard') => {
+  return request.get<T>('/song/url/v1', { id, level })
+}
+
+/**
+ * 获取音乐url 新版
+ */

@@ -1,0 +1,50 @@
+@import '@/assets/scss/variables.module.scss';
+@import '@/assets/scss/_handle.scss';
+
+/* 
+  自定义的公共样式
+*/
+
+* {
+  margin:0;
+  padding: 0;
+}
+/* 定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸 */
+::-webkit-scrollbar {
+  width: 10px; /* 对垂直滚动条有效 */
+  // height: 10px;  /* 对水平滚动条有效 */
+}
+
+/* 定义滚动条的轨道颜色、内阴影及圆角 */
+::-webkit-scrollbar-track {
+
+  // @include background_color('background_color');
+  border-radius: 5px;
+}
+
+/* 定义滑块颜色、内阴影及圆角 */
+::-webkit-scrollbar-thumb {
+  @include background_color('lightGreyColor');
+  border-radius: 5px;
+  width: 8px;
+  
+}
+
+
+/* 光标移到滚动滑块上样式颜色变深 */
+::-webkit-scrollbar-thumb:hover {
+  @include background_color('greyColor');
+}
+
+/* 定义两端按钮的样式 */
+::-webkit-scrollbar-button {
+  // background-color: cyan;
+  display: none;
+}
+
+/* 定义右下角汇合处的样式 */
+::-webkit-scrollbar-corner {
+  // background: khaki;
+}
+
+

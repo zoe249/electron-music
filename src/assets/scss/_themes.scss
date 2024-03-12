@@ -1,0 +1,26 @@
+$themes: (
+  light: (
+    background_color:$white-color,
+    text-color:$black-color,
+    // tabbar_border:#000,
+    // background_image: linear-gradient(to bottom, #b1facc 0%, #fff 100%),
+    color:$black-color,
+    gery-color:#000,
+    light-grey-color: $lightGreyColor,
+    card-bg-color: $light-card-color,
+    card-box-shadow: $light-card-shadow,
+    aside-bg-color: $light-aside-bgcolor,
+  ),
+  dark: (
+    background_color:$black-color,
+    text-color:$white-color,
+    // tabbar_border:#ccc,
+    // background_image: linear-gradient(to bottom, #212121 0%, #212121 100%),
+    color:$white-color,
+    gery-color:#ccc,
+    light-grey-color: $drak-grey-color,
+    card-bg-color: $dark-card-color,
+    card-box-shadow: $dark-card-shadow,
+    aside-bg-color: $dark-aside-bgcolor
+  )
+)

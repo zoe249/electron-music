@@ -159,7 +159,7 @@ onMounted(() => {
     margin-right: 10px;
   }
   .logo-icon {
-    background-color: #2c2d36;
+    // background-color: #2c2d36;
     height: 30px;
     width: 30px;
     display: flex;
@@ -182,7 +182,7 @@ onMounted(() => {
   padding: 20px;
   height: 400px;
   width: 320px;
-  background-color: #1b1b24;
+  // background-color: #1b1b24;
   position: absolute;
   z-index: 9;
   top: 50%;

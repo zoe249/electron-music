@@ -25,23 +25,23 @@ import Player from './Player/index.vue'
   width: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  .layout-content {
-    background: #13131a;
-    color: white;
-  }
-}
+// @media (prefers-color-scheme: dark) {
+//   .layout-content {
+//     background: #13131a;
+//     color: white;
+//   }
+// }
 
-@media (prefers-color-scheme: light) {
-  .layout-content {
-    background: #ddd;
-    color: black;
-  }
-}
+// @media (prefers-color-scheme: light) {
+//   .layout-content {
+//     background: #ddd;
+//     color: black;
+//   }
+// }
 
 .main-content {
   box-sizing: border-box;
-  height: 100vh;
+  height: calc(100vh - 80px - 80px);
   padding: 20px;
 }
 </style>

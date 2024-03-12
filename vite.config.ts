@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import commonjsExternals from 'vite-plugin-commonjs-externals'
 
@@ -11,6 +12,7 @@ const externals = ['path', /^electron(\/.+)?$/]
 export default defineConfig({
   plugins: [
     vue(),
+    vueJsx(),
     AutoImport({
       imports: ['vue', 'pinia', 'vue-router'],
       dts: './src/auto-imports.d.ts',
@@ -32,7 +34,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: '@import "@/assets/style/variables.scss";',
+        additionalData: '@import "@/assets/scss/_common.scss";',
       },
     },
   },

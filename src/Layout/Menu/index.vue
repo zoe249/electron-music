@@ -8,12 +8,14 @@
     <div class="menu" v-for="menu in menus" :key="menu.id">
       <MenuItem v-for="item in menu.menu" :key="item.icon" :menu-item="item" />
     </div>
+    <Dark />
   </div>
 </template>
 
 <script setup lang="ts">
 import LogoIcon from '@/components/LogoIcon/index.vue'
 import MenuItem from './components/MenuItem.vue'
+import Dark from '@/components/Dark/index.vue'
 const title = import.meta.env.VITE_APP_TITLE
 const menus = reactive([
   {
@@ -70,7 +72,8 @@ const menus = reactive([
   height: 100vh;
   padding: 20px;
   width: 200px;
-  background-color: #1a1a21;
+  @include aside_bg_color('aside-bg-color');
+  // background-color: #1a1a21;
 }
 .title {
   width: 100%;
@@ -85,6 +88,7 @@ const menus = reactive([
 
 .menu {
   padding: 10px 0;
-  border-bottom: 1px solid #27272e;
+  // border-bottom: 1px solid #27272e;
+  @include border_bottom_color('light-grey-color');
 }
 </style>

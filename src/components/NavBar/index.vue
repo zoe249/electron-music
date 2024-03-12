@@ -55,7 +55,7 @@ const activeBorderStyle = computed(() => {
     cursor: pointer;
   }
   .activeNav {
-    color: #ffffff;
+    @include font_color('text-color');
     font-weight: bold;
   }
   .nva-border {

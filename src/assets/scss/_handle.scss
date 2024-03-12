@@ -1,0 +1,81 @@
+@import '@/assets/scss/themes.scss';
+
+// 遍历主题map
+@mixin themeify{
+  @each $theme-name, $theme-map in $themes {
+    $theme-map: $theme-map !global;
+    [class="#{$theme-name}"] & {
+      @content;
+    }
+  }
+}
+
+// 声明一个根据Key获取颜色的function
+@function themed($key) {
+  @return map-get($theme-map, $key); 
+}
+
+// 获取背景颜色
+@mixin background_color($color) {
+  @include themeify {
+    background: themed($color) !important;
+  }
+}
+
+/** 渐变背景色*/
+@mixin background_image($color){
+  @include themeify{
+    background-image: themed($color) !important;
+  }
+}
+
+/** 获取灰色字体颜色*/
+@mixin grey_color($color){
+  @include themeify{
+    color: themed($color) !important;
+  }
+}
+
+// 获取字体颜色
+@mixin font_color($color) {
+  @include themeify { 
+    color: themed($color) !important;
+  }
+}
+
+// 获取字体颜色
+@mixin border_color($color) {
+  @include themeify { 
+    border: 1px solid themed($color) !important;
+  }
+}
+
+// 左侧菜单栏下划线
+@mixin border_bottom_color($color) {
+  @include themeify { 
+    border-bottom: 1px solid themed($color) !important;
+  }
+}
+
+// 卡片背景颜色
+@mixin card_bg_color($color) {
+  @include themeify {
+    background-color: themed($color) !important;
+  }
+}
+
+// 卡片阴影
+@mixin card_shadow($color) {
+  @include themeify {
+    // background-color: themed($color) !important;
+    box-shadow: 2px 2px 10px 2px themed($color) !important;
+  }
+}
+
+// 侧边栏背景颜色
+@mixin aside_bg_color($color) {
+  @include themeify {
+    background-color: themed($color) !important;
+  }
+}
+

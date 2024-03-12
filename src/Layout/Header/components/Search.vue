@@ -105,7 +105,7 @@ const changeInput = debounce(
 
 const toSearchPage = (keyword: string) => {
   isSearchWrap.value = false
-  router.push('/search')
+  router.push('/search?keywords=' + keyword)
 }
 
 onMounted(() => {
@@ -121,8 +121,9 @@ onMounted(() => {
 .search-input {
   height: 35px;
   width: 250px;
-  background-image: linear-gradient(to right, #181d2a, #251b26);
-  border: 1.5px solid #322842;
+  // background-image: linear-gradient(to right, #181d2a, #251b26);
+  // border: 1.5px solid #322842;
+  @include border_color('light-grey-color');
   border-radius: 6px;
   position: relative;
 
@@ -159,17 +160,17 @@ onMounted(() => {
 .listen-music {
   height: 35px;
   width: 25px;
-  border: 1px solid #37373d;
+  @include border_color('light-grey-color');
   margin-left: 10px;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #251b27;
+  // background-color: #251b27;
   :hover {
     color: #ffffff;
-    background-color: #312336;
+    // background-color: #312336;
     height: 35px;
     width: 25px;
     border-radius: 6px;
@@ -183,7 +184,8 @@ onMounted(() => {
   height: 500px;
   width: 320px;
   box-sizing: border-box;
-  background-color: #2d2d38;
+  @include card_shadow('card-box-shadow');
+  @include card_bg_color('card-bg-color');
   position: absolute;
   z-index: 9;
   top: 100px;
@@ -213,13 +215,13 @@ onMounted(() => {
       color: #ff3a3a;
     }
     &:hover {
-      background-color: #393944;
+      // background-color: #393944;
     }
   }
   .suggest-item {
     cursor: pointer;
     &:hover {
-      background-color: #393944;
+      // background-color: #393944;
     }
     .search-name {
       height: 40px;

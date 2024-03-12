@@ -42,7 +42,7 @@ const menuItemClick = () => {
   cursor: pointer;
   color: #a3a3a6;
   &:hover {
-    background-color: #27272e;
+    // background-color: #27272e;
   }
 }
 .activeRoute {
@@ -55,7 +55,7 @@ const menuItemClick = () => {
   border-radius: 8px;
   cursor: pointer;
   color: #ffffff;
-  background-image: linear-gradient(120deg, #ff1368, #fc3d49);
+  background-image: linear-gradient(120deg, #ff1368, #fc3d49) !important;
   .iconfont {
     color: #ffffff;
   }
