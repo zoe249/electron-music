@@ -69,9 +69,9 @@ const menus = reactive([
 <style lang="scss" scoped>
 .menu-content {
   box-sizing: border-box;
-  height: 100vh;
+  height: 100%;
   padding: 20px;
-  width: 200px;
+  width: 230px;
   @include aside_bg_color('aside-bg-color');
   // background-color: #1a1a21;
 }

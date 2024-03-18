@@ -41,7 +41,8 @@ import Player from './Player/index.vue'
 
 .main-content {
   box-sizing: border-box;
-  height: calc(100vh - 80px - 80px);
+  height: calc(100% - 80px - 80px);
+  width: 100%;
   padding: 20px;
 }
 </style>

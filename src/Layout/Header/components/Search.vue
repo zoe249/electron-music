@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <div class="search-box" v-if="isSearchWrap">
+  <div class="search-box" v-if="isSearchFocus">
     <div class="hot-search" v-if="!searchValue">
       <div class="title">热搜榜</div>
       <div

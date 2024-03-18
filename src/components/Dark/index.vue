@@ -20,13 +20,17 @@ theme.value = cache.local.get('theme')
 const checkMode = () => {
   isDark.value = !isDark.value
   if (!isDark.value) {
-    style.value = `box-shadow: 0 0 10px 100vw #17171E;`
-    theme.value = 'dark'
+    window.document.documentElement.setAttribute('class', 'dark')
+    cache.local.set('theme', 'dark')
+    // return
+    // style.value = `box-shadow: 0 0 10px 100vw #17171E;`
+    // theme.value = 'dark'
   } else {
     window.document.documentElement.setAttribute('class', 'light')
     cache.local.set('theme', 'light')
-    style.value = `box-shadow: 0 0 0px 0px #000;`
-    theme.value = 'light'
+    // return
+    // style.value = `box-shadow: 0 0 0px 0px #000;`
+    // theme.value = 'light'
   }
 }
 

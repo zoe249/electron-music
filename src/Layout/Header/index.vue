@@ -54,7 +54,7 @@ const onElectronOperationWindow = (
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc(100vw - 250px);
+  width: 100%;
 }
 .header-left {
   display: flex;

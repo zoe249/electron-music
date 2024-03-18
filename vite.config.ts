@@ -20,7 +20,7 @@ export default defineConfig({
     commonjsExternals({ externals }),
   ],
 
-  base: 'file:///' + path.resolve(__dirname, './dist/'),
+  // base: 'file:///' + path.resolve(__dirname, './dist/'),
   server: {
     port: 8888,
     cors: true,

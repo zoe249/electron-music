@@ -10,6 +10,7 @@ $themes: (
     card-bg-color: $light-card-color,
     card-box-shadow: $light-card-shadow,
     aside-bg-color: $light-aside-bgcolor,
+    player-bg-color: $light-player-bgcolor,
   ),
   dark: (
     background_color:$black-color,
@@ -21,6 +22,7 @@ $themes: (
     light-grey-color: $drak-grey-color,
     card-bg-color: $dark-card-color,
     card-box-shadow: $dark-card-shadow,
-    aside-bg-color: $dark-aside-bgcolor
+    aside-bg-color: $dark-aside-bgcolor,
+    player-bg-color: $dark-player-bgcolor,
   )
 )
