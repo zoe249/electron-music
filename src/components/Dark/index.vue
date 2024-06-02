@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import cache from '@/utils/cache'
-const isDark = ref(false)
+const isDark = ref(true)
 const style = ref()
 const theme = ref()
 

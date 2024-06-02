@@ -1,7 +1,7 @@
 <template>
   <div class="page-header">
     <div class="header-title">
-      <span class="font_28">起风了</span>
+      <span class="font_28">{{ keywords }}</span>
       <span>的相关搜索如下</span>
     </div>
     <NavBar
@@ -11,7 +11,7 @@
     />
   </div>
 
-  <div class="page-content" v-if="currentType === '1'">
+  <div class="page-content" v-if="currentType === 1">
     <div class="content-header row-flex">
       <div class="rank">#</div>
       <div class="title">标题</div>
@@ -35,7 +35,7 @@
         <span v-else>{{ index + 1 }}</span>
       </div>
       <div class="title">
-        <img :src="item.artists[0].img1v1Url" alt="" />
+        <!-- <img :src="item.artists[0].img1v1Url" alt="" /> -->
         <div class="title-info">
           <div class="name">{{ item.name }}</div>
           <div class="author">{{ item.artists[0].name }}</div>
@@ -58,32 +58,40 @@ import useMusicStore from '@/store/modules/music'
 const musicStore = useMusicStore()
 const route = useRoute()
 
-const keywords = route.query.keywords as string
-const currentType = ref('1')
-const navbarList = reactive([
-  { type: '1018', label: '综合' },
-  { type: '1', label: '单曲' },
-  { type: '1000', label: '歌单' },
-  { type: '100', label: '歌手' },
-  { type: '2000', label: '声音' },
-  { type: '1009', label: '播客' },
-  { type: '1006', label: '歌词' },
-  { type: '10', label: '专辑' },
-  { type: '1004', label: 'MV' },
-  { type: '1002', label: '用户' },
+let keywords = route.query.keywords + ''
+const currentType = ref(1)
+const navbarList = reactive<Array<{type: number, label: string}>>([
+  { type: 1018, label: '综合' },
+  { type: 1, label: '单曲' },
+  { type: 1000, label: '歌单' },
+  { type: 100, label: '歌手' },
+  { type: 2000, label: '声音' },
+  { type: 1009, label: '播客' },
+  { type: 1006, label: '歌词' },
+  { type: 10, label: '专辑' },
+  { type: 1004, label: 'MV' },
+  { type: 1002, label: '用户' },
 ])
 
-const songsList = ref<Array<any>>([])
+const songsList = ref<Array<SongType>>([])
 const activeSongIndex = ref<number>()
 
-const navBarChange = async (type: string) => {
+watch(() => route.query, (newVal) => {
+  keywords = newVal.keywords + ''
+  navBarChange(1, newVal.keywords as string)
+})
+
+const navBarChange = async (type: number = 1, keyword: string = keywords) => {
   currentType.value = type
-  getSearch<{ code: number; result: any }>(type, keywords).then((res) => {
+  getSearch<{ code: number; result: any }>(type, keyword).then((res) => {
     songsList.value = res.result.songs
   })
 }
 
-const songsClick = (music: any) => {
+/**
+ * @description 添加音乐
+ */
+const songsClick = (music: SongType) => {
   musicStore.addMusic(music.id)
 }
 
@@ -94,7 +102,7 @@ const songsMOveLeave = () => {
   activeSongIndex.value = -1
 }
 
-onMounted(() => navBarChange('1'))
+onMounted(() => navBarChange(1))
 </script>
 
 <style lang="scss" scoped>

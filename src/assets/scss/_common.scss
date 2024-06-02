@@ -8,6 +8,10 @@
 * {
   margin:0;
   padding: 0;
+  // -webkit-user-select: none;
+  // -moz-user-select: none;
+  // -ms-user-select: none;
+  // user-select: none;
 }
 /* 定义滚动条宽高及背景，宽高分别对应横竖滚动条的尺寸 */
 ::-webkit-scrollbar {
@@ -39,7 +43,7 @@
 /* 定义两端按钮的样式 */
 ::-webkit-scrollbar-button {
   // background-color: cyan;
-  display: none;
+  // display: none;
 }
 
 /* 定义右下角汇合处的样式 */

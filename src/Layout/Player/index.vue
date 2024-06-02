@@ -3,8 +3,16 @@
     <div class="song-info">
       <div class="song-img">
         <div class="song-bg">
-          <img class="music-circle" src="../../assets/images/disc.png" alt="" />
-          <img class="music-src" src="../../assets/images/default.png" alt="" />
+          <img
+            class="music-circle"
+            src="../../../public/icons/disc.png"
+            alt=""
+          />
+          <img
+            class="music-src"
+            :src="musicInfo.picUrl"
+            alt=""
+          />
         </div>
 
         <div class="info-right">
@@ -28,42 +36,46 @@
         <i class="iconfont icon-shangyishou"></i>
         <div class="play-btn" @click="handlerPlay">
           <i
-            class="iconfont icon-bofang"
             v-if="musicStore.$state.isPlaying"
-          ></i>
-          <i class="iconfont icon-zanting" v-else></i>
+            class="iconfont icon-zanting"
+          />
+          <i v-else class="iconfont icon-bofang" />
         </div>
         <i class="iconfont icon-shangyishou xiayishou"></i>
         <i class="iconfont icon-geci"></i>
       </div>
       <div class="song-duration">
-        <div class="active-duration">00:00</div>
-        <div
-          ref="totalBarRef"
-          class="control-bar"
-          @mouseenter="barMoveEnter"
-          @mouseleave="barMoveLeave"
-        >
+        <div class="active-duration">
+          {{ formatDuration(musicInfo.currentDur!) }}
+        </div>
+        <div ref="totalBarRef" class="control-bar" @click="ballMoveClick">
           <div ref="activeBarRef" class="active-bar"></div>
           <div
-            v-show="isMoveBall"
             ref="activeBallRef"
             class="active-ball"
             :style="{ transform: `translateX(${activeBarWidth}px)` }"
             @mousedown="ballMouseDown($event)"
             @mousemove="ballMouseMove"
-            @mouseup="ballMouseUp"
           ></div>
         </div>
-        <div class="total-duration">05:32</div>
+        <div class="total-duration">
+          {{ formatDuration(musicInfo.duration!) }}
+        </div>
       </div>
     </div>
     <div class="song-setting"></div>
+
+    <audio 
+      ref="audioRef" 
+      :src="musicInfo.musicUrl" 
+      @timeupdate="timeupdate"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import useMusicStore from '@/store/modules/music'
+import { formatDuration } from '@/utils/index'
 
 const musicStore = useMusicStore()
 const isMoveBall = ref(false)
@@ -71,30 +83,53 @@ const isMoveBall = ref(false)
 const totalBarRef = ref<HTMLDivElement>()
 const activeBarRef = ref<HTMLDivElement>()
 const activeBallRef = ref<HTMLDivElement>()
+const audioRef = ref<HTMLMediaElement>()
+
+const activeBarWidth = ref<number>(0)
 
 const ballInfo = reactive({
   x: 0,
   y: 0,
 })
 
-const activeBarWidth = ref<Number>()
-
-// const activeBarWidth = computed(() => {
-//   return activeBarRef.value?.clientWidth! - 5
-// })
-
-musicStore.$subscribe((item, state) => {
-  console.log(state)
+const musicInfo = reactive<{currentDur: number, [key: string]: any } & musicInfoType>({
+  currentDur: 0,
+  duration: 320,
+  name: '',
+  musicUrl: '',
+  id: null,
+  picUrl: '',
+  author: ''
 })
 
-const barMoveEnter = () => {
-  // console.log([totalBarRef.value])
-  // console.log([activeBarRef.value])
-  // console.log([activeBallRef.value])
+watch(() => musicStore.$state.isPlaying, (val) => {
+  // console.log('watch', val)
+  nextTick(() => val ? _play() : _pause())
+})
 
-  isMoveBall.value = true
+musicStore.$subscribe((_, state) => {
+  Object.keys(musicInfo).forEach(key => {
+    if (key === 'currentDur') {
+      musicInfo['currentDur'] = 0
+    } else {
+      musicInfo[key] = state.musicInfo[key as keyof musicInfoType]
+    }
+  })
+  if (musicInfo.id !== state.musicInfo.id) {
+    nextTick(() => musicStore.play())
+  }
+})
+
+const _play = () => {
+  audioRef.value?.play()
 }
-const barMoveLeave = () => (isMoveBall.value = false)
+const _pause = () => {
+  audioRef.value?.pause()
+}
+
+const timeupdate = (event: Event) => {
+  musicInfo.currentDur = parseInt(((event.target as HTMLAudioElement).currentTime).toFixed(0))
+}
 
 const handlerPlay = () => {
   if (musicStore.$state.isPlaying) {
@@ -104,29 +139,43 @@ const handlerPlay = () => {
   }
 }
 
-let isMove = false
-const ballMouseDown = (event) => {
-  console.log('开始')
-  isMove = true
+const ballMouseDown = (event: MouseEvent) => {
+  isMoveBall.value = true
   ballInfo.x = event.x
-  ballInfo.y = event.y
   document.addEventListener('mousemove', ballMouseMove)
-  document.addEventListener('mouseup', function () {
-    console.log('结束')
-    document.removeEventListener('mousemove', function () {
-      console.log('清除成功')
-    })
-    isMove = false
-  })
+  document.addEventListener('mouseup', ballMouseUp)
 }
-const ballMouseMove = () => {
-  // console.log()
-  if (isMove) {
-    console.log(event.x, ballInfo.x, event.x - ballInfo.x)
-    activeBarWidth.value = event.x - ballInfo.x
+
+/**
+ *
+ * @param event
+ */
+const ballMouseMove = (event: MouseEvent) => {
+  if (isMoveBall.value) {
+    let moveX = event.clientX - totalBarRef.value?.offsetLeft!
+    if (moveX > 0 && moveX < totalBarRef.value?.clientWidth!) {
+      activeBarWidth.value = moveX
+      // 计算当前时长
+      // const _ratio = (moveX / totalBarRef.value?.clientWidth!).toFixed(2)
+      musicInfo.currentDur = musicInfo.duration! * getRatio(moveX)
+    }
   }
 }
-const ballMouseUp = () => {}
+
+const ballMouseUp = () => {
+  isMoveBall.value = false
+}
+
+const ballMoveClick = (event: MouseEvent) => {
+  const _current = event.x - totalBarRef.value?.offsetLeft!
+  activeBarWidth.value = _current
+  musicInfo.currentDur = musicInfo.duration! * getRatio(_current)
+  console.log(musicInfo.currentDur)
+}
+
+const getRatio = (x: number) => {
+  return Number((x / totalBarRef.value?.clientWidth!).toFixed(2))
+}
 </script>
 
 <style lang="scss" scoped>
@@ -154,7 +203,6 @@ const ballMouseUp = () => {}
     .song-img {
       display: flex;
       align-items: center;
-
       .song-icon {
         width: 150px;
         height: 30px;

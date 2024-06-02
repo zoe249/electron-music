@@ -1,11 +1,5 @@
 import { getSongsInfo, getSongsUrl } from '@/api/common'
-interface musicInfoType {
-  name: string
-  musicUrl: string
-  id: string
-  picUrl: string
-  author: string
-}
+
 const useMusicStore = defineStore('music', {
   state: () => ({
     musicInfo: {} as musicInfoType,
@@ -13,30 +7,32 @@ const useMusicStore = defineStore('music', {
     isPlaying: false,
   }),
   actions: {
-    addMusic(ids: string) {
+    addMusic(ids: number) {
       this.getMusicDetail(ids)
     },
 
     /**
      * 获取歌曲详情
      */
-    async getMusicDetail(ids: string) {
-      const res = await getSongsInfo<{ songs: any; code: number }>(ids)
+    async getMusicDetail(ids: number) {
+      const res = await getSongsInfo<{ songs: SongType[]; code: number }>(ids)
       const _musicInfo = {
         name: res.songs[0].al.name,
         id: res.songs[0].al.id,
         picUrl: res.songs[0].al.picUrl,
         author: res.songs[0].ar[0].name,
       } as musicInfoType
-      _musicInfo['musicUrl'] = await this.getUrl(ids)
+      const { url, duration } = await this.getUrl(ids)
+      _musicInfo['duration'] = parseInt((duration / 1000).toFixed(0))
+      _musicInfo['musicUrl'] = url
       this.musicInfo = _musicInfo
     },
     /**
      * 获取歌曲Url
      */
-    async getUrl(ids: string) {
+    async getUrl(ids: number) {
       const res = await getSongsUrl<{ code: number; data: any }>(ids)
-      return res.data[0].url
+      return { url: res.data[0].url, duration: res.data[0].time }
     },
 
     /**

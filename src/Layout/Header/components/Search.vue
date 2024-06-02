@@ -8,7 +8,6 @@
         :placeholder="searchInfo?.showKeyword"
         @input="changeInput"
         @focus="updateIsFocus(true)"
-        @blur="updateIsFocus(false)"
       />
       <i
         v-show="searchValue"
@@ -21,7 +20,7 @@
     </div>
   </div>
 
-  <div class="search-box" v-if="isSearchFocus">
+  <div class="search-box" v-if="isSearchWrap">
     <div class="hot-search" v-if="!searchValue">
       <div class="title">热搜榜</div>
       <div
@@ -40,10 +39,13 @@
       <div class="title">猜你想搜</div>
       <div
         class="suggest-item"
-        v-for="(item, index) in searchSuggestList"
+        v-for="(item) in searchSuggestList"
         @click="toSearchPage(item.name)"
       >
-        <div class="search-name">{{ item.name }}</div>
+        <div class="search-name">
+          <span style="color: #7F95C4;">{{ searchValue }}</span>
+          <span>{{ item.name.slice(searchValue.length) }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -65,20 +67,21 @@ const isSearchFocus = ref(false)
 const isSearchWrap = ref(false)
 
 const searchHotList = ref()
-const searchSuggestList = ref()
+const searchSuggestList = ref<SongType[]>()
+
+watch(searchValue, () => {
+  changeInput()
+})
 
 const updateIsFocus = (value: boolean) => {
+  isSearchFocus.value = value
   isSearchFocus.value = value
   value ? (isSearchWrap.value = true) : ''
 }
 
 const handlerSearch = () => {
-  let _searchVal = ''
-  if (searchValue.value) {
-    _searchVal = searchValue.value
-  } else {
-    _searchVal = searchInfo.value?.realkeyword!
-  }
+  let _searchVal = searchValue.value ? searchValue.value : searchInfo.value?.realkeyword!
+  console.log(_searchVal)
 }
 
 const getDefaulet = () => {
@@ -95,6 +98,7 @@ const getSearchHotList = () => {
 
 const changeInput = debounce(
   async () => {
+    if (!searchValue.value) return
     getSearchSuggest(searchValue.value).then((res: any) => {
       searchSuggestList.value = res.result.songs
     })
@@ -105,6 +109,7 @@ const changeInput = debounce(
 
 const toSearchPage = (keyword: string) => {
   isSearchWrap.value = false
+  searchValue.value = keyword
   router.push('/search?keywords=' + keyword)
 }
 

@@ -2,7 +2,7 @@
   <div class="navbar">
     <div
       :class="['nav-item', item.type === currentType ? 'activeNav' : '']"
-      v-for="(item, index) in navBarList"
+      v-for="(item) in navBarList"
       :key="item.type"
       @click="nvaItemClick(item.type)"
     >
@@ -18,18 +18,18 @@ import { PropType } from 'vue'
 const emits = defineEmits(['navBarChange'])
 const props = defineProps({
   navBarList: {
-    type: Array as PropType<Array<{ type: string; label: string }>>,
+    type: Array as PropType<Array<{ type: number; label: string }>>,
     required: true,
   },
   currentType: {
-    type: String,
+    type: Number,
     required: true,
   },
 })
 
 // const currentType = ref(props.initCurrentType)
 
-const nvaItemClick = (type: string) => {
+const nvaItemClick = (type: number) => {
   // currentType.value = type
   emits('navBarChange', type)
 }

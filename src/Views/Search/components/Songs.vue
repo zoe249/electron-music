@@ -4,7 +4,7 @@ import { PropType } from 'vue'
 export default defineComponent({
   props: {
     songsList: {
-      type: Array as PropType<Array<any>>,
+      type: Array as PropType<Array<SongType>>,
       required: true,
     },
     keywords: {
@@ -28,7 +28,7 @@ export default defineComponent({
     watch(
       () => props.songsList,
       (newVal) => {
-        console.log('监听变化')
+        console.log('监听变化', newVal[0].picUrl)
       }
     )
     const render = () =>
