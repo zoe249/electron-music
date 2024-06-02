@@ -42,5 +42,5 @@ interface musicInfoType {
   id: number | null
   picUrl: string
   author: string
-  duration: number?
+  duration?: number
 }

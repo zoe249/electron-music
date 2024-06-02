@@ -17,7 +17,7 @@ const useMusicStore = defineStore('music', {
     async getMusicDetail(ids: number) {
       const res = await getSongsInfo<{ songs: SongType[]; code: number }>(ids)
       const _musicInfo = {
-        name: res.songs[0].al.name,
+        name: res.songs[0].name,
         id: res.songs[0].al.id,
         picUrl: res.songs[0].al.picUrl,
         author: res.songs[0].ar[0].name,

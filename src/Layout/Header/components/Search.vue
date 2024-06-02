@@ -237,4 +237,7 @@ onMounted(() => {
     }
   }
 }
+input {
+  @include font_color('color')
+}
 </style>

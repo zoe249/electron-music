@@ -66,10 +66,10 @@ export function tansParams(params: any) {
  */
 export function formatDuration(duration: number) {
   let sDuration = duration
-  const _minute = Number((sDuration / 60).toFixed(0))
+  const _minute = sDuration < 60 ? 0 : Number((sDuration / 60).toFixed(0))
   const _second = Number((sDuration % 60).toFixed(0))
-  let _duration = _minute < 9 ? '0' + _minute : _minute
+  let _duration = _minute <= 9 ? '0' + _minute : _minute
   _duration =
-    _second < 9 ? _duration + ':0' + _second : _duration + ':' + _second
+    _second <= 9 ? _duration + ':0' + _second : _duration + ':' + _second
   return _duration
 }

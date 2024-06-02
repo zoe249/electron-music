@@ -43,14 +43,13 @@
       </div>
       <div class="album">{{ item.album.name }}</div>
       <div class="lover"><i class="iconfont icon-aixin1"></i></div>
-      <div class="duration">{{ formatDuration(item.duration) }}</div>
+      <div class="duration">{{ formatDuration(item.duration / 1000) }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import NavBar from '@/components/NavBar/index.vue'
-
 import { formatDuration } from '@/utils/index'
 import { getSearch } from './api'
 import useMusicStore from '@/store/modules/music'
@@ -124,7 +123,7 @@ onMounted(() => navBarChange(1))
 }
 .page-content {
   width: 100%;
-  height: calc(100% - 120px);
+  height: calc(100% - 40px);
   overflow-y: scroll;
   .content-header {
     height: 40px;
@@ -191,6 +190,7 @@ onMounted(() => navBarChange(1))
     &:hover {
       @include card_shadow('card-box-shadow');
       @include card_bg_color('card-bg-color');
+      transition: all .5s;
       border-radius: 12px;
     }
     .icon-bofang {
