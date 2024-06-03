@@ -5,12 +5,12 @@
         <div class="song-bg">
           <img
             class="music-circle"
-            src="../../../public/icons/disc.png"
+            src="/public/icons/disc.png"
           />
           <img
             class="music-src"
             :style="{ 'animationPlayState' : isPlaying ? 'running' : 'paused' }"
-            :src="musicInfo.picUrl"
+            :src="musicInfo.picUrl || '/public/icons/default.png'"
           />
         </div>
 
@@ -47,10 +47,16 @@
         <div class="active-duration">
           {{ formatDuration(musicTimeInfo.currentDur!) }}
         </div>
-        <div ref="totalBarRef" class="control-bar" @click="ballMoveClick">
+        <div 
+          ref="totalBarRef" 
+          class="control-bar" 
+          @click="ballMoveClick"
+          @mouseover="barMouseOver"
+          @mouseleave="barMouseLeave"
+        >
           <div ref="activeBarRef" :style="{ 'width': activeBarWidth + '%' }" class="active-bar"></div>
-          <!-- :style="{ transform: `translateX(${activeBarWidth}%)` }" -->
           <div
+            v-show="isShowMoveBall || isMoveBall"
             ref="activeBallRef"
             class="active-ball"
             @mousedown="ballMouseDown($event)"
@@ -78,6 +84,7 @@ import useMusicStore from '@/store/modules/music'
 import { formatDuration } from '@/utils/index'
 
 const musicStore = useMusicStore()
+const isShowMoveBall = ref(false)
 const isMoveBall = ref(false)
 const { isPlaying } = toRefs(musicStore.$state)
 
@@ -121,24 +128,26 @@ musicStore.$subscribe((_, state) => {
   musicTimeInfo['duration'] = state.musicInfo.duration!
 })
 
-const _play = () => {
-  audioRef.value?.play()
-}
-const _pause = () => {
-  audioRef.value?.pause()
-}
+/**
+ * 播放音乐
+ * 只能通过 store 调用
+ */
+const _play = () => audioRef.value?.play()
+/**
+ * 暂停音乐
+ * 只能通过 store 调用
+ */
+const _pause = () => audioRef.value?.pause()
 
+/** 音乐播放时间更新 */
 const timeupdate = (event: Event) => {
   musicTimeInfo.currentDur = parseInt(((event.target as HTMLAudioElement).currentTime).toFixed(0))
   activeBarWidth.value = ((musicTimeInfo.currentDur / musicTimeInfo.duration!) * 100)
 }
-
-const ended = () => {
-  musicStore.paused()
-}
+/** 音乐播放结束 */
+const ended = () => musicStore.paused()
 
 const handlerPlay = () => {
-  console.log('first', isPlaying.value)
   if (isPlaying.value) {
     musicStore.paused()
   } else {
@@ -146,6 +155,14 @@ const handlerPlay = () => {
   }
 }
 
+/** 显示拖拽球 */
+const barMouseOver = () => isShowMoveBall.value = true
+/** 隐藏拖拽球 */
+const barMouseLeave = () => isShowMoveBall.value = false
+
+/**
+ * 按下鼠标
+ */
 const ballMouseDown = (event: MouseEvent) => {
   isMoveBall.value = true
   ballInfo.x = event.x
@@ -154,35 +171,42 @@ const ballMouseDown = (event: MouseEvent) => {
 }
 
 /**
- *
- * @param event
+ * 拖拽进度条
  */
 const ballMouseMove = (event: MouseEvent) => {
   if (isMoveBall.value) {
     let moveX = event.clientX - totalBarRef.value?.offsetLeft!
     if (moveX > 0 && moveX < totalBarRef.value?.clientWidth!) {
-      // activeBarWidth.value = moveX
+      activeBarWidth.value = (moveX / totalBarRef.value?.clientWidth!) * 100
       // 计算当前时长
       // const _ratio = (moveX / totalBarRef.value?.clientWidth!).toFixed(2)
       musicTimeInfo.currentDur = musicTimeInfo.duration! * getRatio(moveX)
+      audioRef.value!.currentTime = musicTimeInfo.currentDur
     }
   }
 }
 
+/**
+ * 鼠标弹起
+ */
 const ballMouseUp = () => {
   isMoveBall.value = false
 }
 
+/**
+ * 点击进度条
+ */
 const ballMoveClick = (event: MouseEvent) => {
   const _current = event.x - totalBarRef.value?.offsetLeft!
-  activeBarWidth.value = _current
+  activeBarWidth.value = (_current / totalBarRef.value?.clientWidth!) * 100
   musicTimeInfo.currentDur = musicTimeInfo.duration! * getRatio(_current)
-  console.log(musicInfo.currentDur)
+  audioRef.value!.currentTime = musicTimeInfo.currentDur
 }
 
 const getRatio = (x: number) => {
   return Number((x / totalBarRef.value?.clientWidth!).toFixed(2))
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -263,7 +287,7 @@ const getRatio = (x: number) => {
       color: #b4a3a6;
       .control-bar {
         width: 280px;
-        height: 3px;
+        height: 4px;
         background-color: #4d4d56;
         border-radius: 10px;
         margin: 0 10px;
@@ -274,7 +298,7 @@ const getRatio = (x: number) => {
         .active-bar {
           // position: absolute;
           border-radius: 10px;
-          height: 3px;
+          height: 4px;
           background-color: $primary-color;
         }
         .active-ball {
